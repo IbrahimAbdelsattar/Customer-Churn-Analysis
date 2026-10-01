@@ -24,6 +24,34 @@ The notebook references `/kaggle/input/churn-modelling/Churn_Modelling.csv`. Upd
 
 This repository is an analysis notebook, with no separate deployed churn service.
 
+## UML diagrams
+
+### Main workflow
+
+The training branch applies SMOTE and compares tree models; SHAP provides a separate explanation step.
+
+```mermaid
+sequenceDiagram
+    participant Notebook as Churn notebook
+    participant Data as Customer CSV
+    participant Prep as Feature preparation
+    participant Models as Tree classifiers
+    participant Explain as SHAP
+    Notebook->>Data: Read customer records
+    Data-->>Notebook: Features and churn labels
+    Notebook->>Prep: Encode features and split data
+    Prep-->>Notebook: Training and test inputs
+    Notebook->>Prep: Apply SMOTE to training data
+    Prep-->>Notebook: Resampled training inputs
+    loop Decision Tree and Random Forest candidates
+        Notebook->>Models: Fit and tune model
+        Notebook->>Models: Evaluate on test features
+        Models-->>Notebook: Predictions and metrics
+    end
+    Notebook->>Explain: Explain fitted tree predictions
+    Explain-->>Notebook: Feature contribution plots
+```
+
 ## Getting started
 
 ```bash
